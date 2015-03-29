@@ -1,0 +1,83 @@
+
+body {
+    font-family: 'Raleway', sans-serif;
+}
+
+div#main {
+    height: 100%;
+    background-color: grey;
+    padding: 5px;
+    margin: -8px -4px;
+    position: fixed;
+    width: 100%;
+}
+
+div#header {
+    background-color: rgba(0,0,0,0.8);
+    color: white;
+    width: 100%;
+    padding: 5px;
+    margin: -8px -5px;
+    text-align: center;
+}
+
+div#chatview {
+    height: 70%;
+    color: black;
+    background-color: rgb(237, 237, 237);
+    width: 100%;
+    padding: 5px;
+    margin: 0px -5px;
+}
+
+div#chatbox {
+    height: 30%;
+    background-color: rgba(0,0,0,0.8);
+    margin: 0px -5px;
+    padding: 5px;
+    text-align: center;
+    overflow:scroll;
+}
+
+p.chatBubble {
+    background-color: rgba(41, 128, 185,1.0);
+    width: 50%;
+    padding: 8px;
+    border-radius: 3px;
+    color: white;
+    margin: 5px 30px 4px 12px;
+}
+
+p.yourChatBubble {
+    background-color: rgba(39, 174, 96,1.0);
+    float: right;
+}
+
+input#textBox {
+    height: 48%;
+    margin: 8px;
+    width: 70%;
+    text-align: left;
+    font-family: 'Raleway', sans-serif;
+    font-size: 20px;
+    padding: 0px 5px;
+}
+
+form {
+    height:100%;
+}
+
+button#enterBtn {
+    background-color: green;
+    border: 0px;
+    height: 53%;
+    width: 10%;
+    color: white;
+    font-size: 148%;
+    padding: 0px;
+    font-family: 'Raleway', sans-serif;
+}
+
+h1 {
+    font-size: 200%;
+}

@@ -1,34 +1,65 @@
 <!doctype html>
 <html>
   <head>
-    <title>Test App</title>
-  </head>
-  <body>
-    <h1>Hello World</h1>
+    <title>Test Chat App</title>
 
+      <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+        <link href="media/style.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/datasync.js"></script>
+
+
+  </head>
+  <body>
+      <div id="main">
+          <div id="header">
+              <h1>DataSync Chat Demo</h1>
+          </div>
+          <div id="chatview">
+              <p class="chatBubble">Example of a message from someone else</p>
+              <p class="chatBubble yourChatBubble">Example of your message</p>
+          </div>
+          <div id="chatbox">
+              <form>
+                  <input id="textBox" type="text"/>
+                  <button id="enterBtn" type="button">Enter</button>
+              </form>
+          </div>
+          </div>
+
 
     <script>
       window.onload = function () {
         new DataSync().connect(function (ds) {
-          var btn = document.getElementById('enterBtn'); 
+          var btn = document.getElementById('enterBtn');
           var txt = document.getElementById('textBox');
 
-          btn.onclick = function () {
-            console.log('sending', txt.value);
-            ds.room('mychat').add(txt.value);
-          };
+          var room = ds.room('mychat');
+          room.join(function() {
 
-          ds.room('mychat').onadd(function(value) {
-            console.log('received add message', value);
+            room.get(100, function(data) {
+              console.log('got all data', data);
+                for (var i =0; i<data.size(); i++) {
+                    var chatBubble = document.createElement("p");
+                    chatBubble.textContent = data[i];
+                }
+            });
+
+            btn.onclick = function () {
+              console.log('sending', txt.value);
+              ds.room('mychat').add(txt.value);
+            };
+
+            room.onadd(function(value) {
+              console.log('received add message', value);
+            });
           });
         });
       };
     </script>
 
-    <form>
-      <input id="textBox" type="text"/>
-      <button id="enterBtn" type="button">Enter</button>
-    </form>
+
 </html>

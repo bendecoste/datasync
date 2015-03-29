@@ -1,0 +1,16 @@
+{
+  "aws": {
+    "accessKeyId": "secretgoeshere",
+    "secretAccessKey": "secretgoeshere",
+    "region": "us-east-1"
+  },
+  "sqs": {
+    "storageQueueUrl": "storagequeueurl",
+    "connectionQueueUrl": "connectionqueueurl"
+  },
+  "db": {
+    "host": "localhost",
+    "user": "urname",
+    "database": "csProj"
+  }
+}

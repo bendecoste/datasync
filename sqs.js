@@ -6,6 +6,8 @@ var AWS = require('aws-sdk');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 
+var config = require('./config').get();
+
 function SQS (queueUrl) {
   EventEmitter.call(this);
   this.messenger = new AWS.SQS();
@@ -15,11 +17,10 @@ function SQS (queueUrl) {
 util.inherits(SQS, EventEmitter);
 
 AWS.config.update({
-  accessKeyId: 'AKIAJYMATCHMKFXEBLTQ',
-  secretAccessKey: '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',
-  region: 'us-east-1'
+  accessKeyId: config.aws.accessKeyId,
+  secretAccessKey: config.aws.secretAccessKey,
+  region: config.aws.region
 });
-
 
 SQS.prototype.sendMessage = function(msg) {
   try {

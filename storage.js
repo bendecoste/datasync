@@ -6,15 +6,17 @@ var AWS = require('aws-sdk');
 var DB = require('./db').DB;
 var async = require('async');
 
+var config = require('./config').get();
+
 AWS.config.update({
-  accessKeyId: 'AKIAJYMATCHMKFXEBLTQ',
-  secretAccessKey: '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',
-  region: 'us-east-1'
+  accessKeyId: config.aws.accessKeyId,
+  secretAccessKey: config.aws.secretAccessKey,
+  region: config.aws.region
 });
 
 function Storage () {
-  this.storageSqs = new sqs.SQS('https://sqs.us-east-1.amazonaws.com/005341201218/storage');
-  this.connectionSqs = new sqs.SQS('https://sqs.us-east-1.amazonaws.com/005341201218/connection');
+  this.storageSqs = new sqs.SQS(config.sqs.storageQueueUrl);
+  this.connectionSqs = new sqs.SQS(config.sqs.connectionQueueUrl);
 
   this.db = new DB();
 }
@@ -30,7 +32,7 @@ Storage.prototype._replyErr = function (originalReq) {
 };
 
 // Reply back to the requesting service
-Storage.prototype._reply = function (originalReq, err) {
+Storage.prototype._replyAdd = function (originalReq, err) {
   if (err) {
     return this._replyErr(originalReq);
   }
@@ -39,13 +41,31 @@ Storage.prototype._reply = function (originalReq, err) {
   this.connectionSqs.sendMessage(originalReq);
 };
 
+Storage.prototype._replyGet = function (originalReq, err, data) {
+  if (err) {
+    return this._replyErr(originalReq);
+  }
+
+  originalReq._success = true;
+  originalReq._data = data;
+  this.connectionSqs.sendMessage(originalReq);
+};
+
 Storage.prototype._handleAdd = function (message) {
-  this.db.add(message, this._reply.bind(this, message));
+  this.db.add(message, this._replyAdd.bind(this, message));
+};
+
+Storage.prototype._handleGet = function (message) {
+  this.db.get(message, this._replyGet.bind(this, message));
 };
 
 Storage.prototype.handleMessage = function (message) {
   if (message._cmd === 'ADD') {
     return this._handleAdd(message);
+  }
+
+  if (message._cmd === 'get') {
+    return this._handleGet(message);
   }
 
   // default case -- nothing to do here, no recognized command so we ignore
