@@ -1,0 +1,90 @@
+var sqs = exports;
+exports.constructor = function () {};
+
+var _ = require('lodash');
+var AWS = require('aws-sdk');
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
+
+function SQS (queueUrl) {
+  EventEmitter.call(this);
+  this.messenger = new AWS.SQS();
+  this.queueUrl = queueUrl;
+}
+
+util.inherits(SQS, EventEmitter);
+
+AWS.config.update({
+  accessKeyId: 'AKIAJYMATCHMKFXEBLTQ',
+  secretAccessKey: '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',
+  region: 'us-east-1'
+});
+
+
+SQS.prototype.sendMessage = function(msg) {
+  try {
+    msg = JSON.stringify(msg);
+  } catch (e) {
+    // we failed to convert the message into a string, omit an error
+    this.emit('messageError', msg);
+  }
+
+  var params = {
+    MessageBody: msg,
+    QueueUrl: this.queueUrl,
+    DelaySeconds: 0
+  };
+
+  this.messenger.sendMessage(params, function (err, data) {
+    console.log('sent message', err, data);
+  });
+};
+
+SQS.prototype.listen = function () {
+  var params = {
+    QueueUrl: this.queueUrl,
+    WaitTimeSeconds: 1
+  };
+
+  this.messenger.receiveMessage(params, function(err, data) {
+    if (err) {
+      console.log('error getting data', retrying);
+      return this.listen();
+    }
+
+    if (!data.Messages) {
+      // no useful data returned, nothing to do but retry
+      return this.listen();
+    }
+
+    // if there is no error, emit the data and fetch again
+    _.forEach(data.Messages, function(message) {
+      // before emitting the data, delete the message from sqs so we do not
+      // process it twice.  If processing fails, it will be re-added to
+      // retry
+      var delParams = {
+        QueueUrl: this.queueUrl,
+        ReceiptHandle: message.ReceiptHandle
+      };
+
+      this.messenger.deleteMessage(delParams, function(err, data) {
+        if (err) {
+          console.log('error deleting message', err);
+          return this.listen();
+        }
+
+        try {
+          this.emit('data', JSON.parse(message.Body));
+        } catch (e) {
+          console.log('received poorly formed message from queue', e);
+          return;
+        }
+
+      }.bind(this));
+    }.bind(this));
+
+    this.listen();
+  }.bind(this));
+};
+
+sqs.SQS = SQS;
