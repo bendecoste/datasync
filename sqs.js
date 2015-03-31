@@ -74,12 +74,7 @@ SQS.prototype.listen = function () {
           return this.listen();
         }
 
-        try {
-          this.emit('data', JSON.parse(message.Body));
-        } catch (e) {
-          console.log('received poorly formed message from queue', e);
-          return;
-        }
+        this.emit('data', JSON.parse(message.Body));
 
       }.bind(this));
     }.bind(this));
