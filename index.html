@@ -19,8 +19,7 @@
               <h1>DataSync Chat Demo</h1>
           </div>
           <div id="chatview">
-              <p class="chatBubble">Example of a message from someone else</p>
-              <p class="chatBubble yourChatBubble">Example of your message</p>
+              <p id="messageBox" class="chatBubble">Last sent mesasge: </p>
           </div>
           <div id="chatbox">
               <form>
@@ -54,7 +53,7 @@
             };
 
             room.onadd(function(value) {
-              console.log('received add message', value);
+              document.getElementById('messageBox').textContent = value;
             });
           });
         });
