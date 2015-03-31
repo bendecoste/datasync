@@ -10,7 +10,8 @@ function DB () {
   this.config = {
     host: config.db.host,
     user: config.db.user,
-    database: config.db.database
+    database: config.db.database,
+    password: config.db.password
   };
 }
 
