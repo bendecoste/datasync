@@ -81,6 +81,11 @@ Connection.prototype._handleAddResponse = function (message) {
 
 Connection.prototype._handleGetResponse = function (message) {
   var socket = this._sockets[message._socketId];
+  if (!socket) {
+    // nothing to do if we pull expired socket
+    return;
+  }
+
   socket.emit('get#complete', message);
 };
 
