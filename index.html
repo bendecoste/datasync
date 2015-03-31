@@ -19,7 +19,7 @@
               <h1>DataSync Chat Demo</h1>
           </div>
           <div id="chatview">
-              <p id="messageBox" class="chatBubble">Last sent mesasge: </p>
+              <p id="messageBox" class="chatBubble">Last sent message: </p>
           </div>
           <div id="chatbox">
               <form>
@@ -32,13 +32,20 @@
 
     <script>
       window.onload = function () {
+        // connect to datasync
         new DataSync().connect(function (ds) {
+
+          // get reference to chat box and enter button
           var btn = document.getElementById('enterBtn');
           var txt = document.getElementById('textBox');
 
+          // the room for datasync
           var room = ds.room('mychat');
+
+          // join the roomc
           room.join(function() {
 
+            // get the last 100 messages
             room.get(100, function(data) {
               console.log('got all data', data);
                 for (var i =0; i<data.size(); i++) {
@@ -47,13 +54,15 @@
                 }
             });
 
+            // send the message once user presses "enter"
             btn.onclick = function () {
               console.log('sending', txt.value);
               ds.room('mychat').add(txt.value);
             };
 
+            // whenever another user adds a message, add it to the messagebox
             room.onadd(function(value) {
-              document.getElementById('messageBox').textContent = value;
+              document.getElementById('messageBox').textContent = 'Last send message: ' + value;
             });
           });
         });
