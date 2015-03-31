@@ -75,6 +75,7 @@ SQS.prototype.listen = function () {
         }
 
         this.emit('data', JSON.parse(message.Body));
+        this.listen();
 
       }.bind(this));
     }.bind(this));
