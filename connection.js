@@ -14,6 +14,10 @@ app.get('/datasync.js', function (req, res) {
   res.sendfile('datasync.js');
 });
 
+app.get('/media/style.css', function (req, res) {
+  res.sendfile('media/style.css');
+});
+
 app.get('/', function(req, res) {
   res.sendfile('index.html');
 });

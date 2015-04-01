@@ -62,7 +62,7 @@
 
             // whenever another user adds a message, add it to the messagebox
             room.onadd(function(value) {
-              document.getElementById('messageBox').textContent = 'Last send message: ' + value;
+              document.getElementById('messageBox').textContent = 'Message: ' + value;
             });
           });
         });
