@@ -37,6 +37,8 @@ function Connection () {
 }
 
 Connection.prototype._handleSocketConnect = function (socket) {
+  console.log('new socket connection with id', socket.id);
+
   this._sockets[socket.id] = socket;
 
   socket.on('disconnect', this._handleSocketDisconnect.bind(this, socket));
@@ -46,11 +48,14 @@ Connection.prototype._handleSocketConnect = function (socket) {
 };
 
 Connection.prototype._handleSocketDisconnect = function (socket) {
+  console.log('socket disconnected: ', socket.id);
   // no need to store this anymore
   this._sockets[socket.id] = undefined;
 };
 
 Connection.prototype._handleJoin = function (socket, room) {
+  console.log('received join request from', socket.id, 'to join room', room);
+
   if (!this._rooms[room]) {
     this._rooms[room] = [];
   }
@@ -60,7 +65,7 @@ Connection.prototype._handleJoin = function (socket, room) {
 };
 
 Connection.prototype._handleGet = function (socket, payload) {
-  console.log('recevied get message:', payload);
+  console.log('recevied get request from', socket.id);
 
   payload._socketId = socket.id;
   payload._cmd = 'get';
@@ -69,7 +74,7 @@ Connection.prototype._handleGet = function (socket, payload) {
 };
 
 Connection.prototype._handleAdd = function (socket, payload) {
-  console.log('received add message:', payload);
+  console.log('received add message from', socket.id, 'for', payload);
 
   payload._socketId = socket.id;
   payload._cmd = 'ADD';
@@ -79,6 +84,7 @@ Connection.prototype._handleAdd = function (socket, payload) {
 
 Connection.prototype._handleAddResponse = function (message) {
   _.forEach(this._rooms[message.room], function(socket) {
+    console.log('broadcasting add success to', socket.id, 'message was: ', message);
     socket.emit('add#complete', message);
   });
 };
@@ -89,6 +95,8 @@ Connection.prototype._handleGetResponse = function (message) {
     // nothing to do if we pull expired socket
     return;
   }
+
+  console.log('replying back to client', socket.id, 'with', message);
 
   socket.emit('get#complete', message);
 };

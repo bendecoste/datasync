@@ -36,6 +36,8 @@ SQS.prototype.sendMessage = function(msg) {
     DelaySeconds: 0
   };
 
+  console.log('sending sqs message');
+
   this.messenger.sendMessage(params, function (err, data) {
     console.log('sent message', err, data);
   });
@@ -74,6 +76,7 @@ SQS.prototype.listen = function () {
           return this.listen();
         }
 
+        console.log('got sqs request', message);
         this.emit('data', JSON.parse(message.Body));
         this.listen();
 

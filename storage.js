@@ -52,10 +52,12 @@ Storage.prototype._replyGet = function (originalReq, err, data) {
 };
 
 Storage.prototype._handleAdd = function (message) {
+  console.log('received add request', message);
   this.db.add(message, this._replyAdd.bind(this, message));
 };
 
 Storage.prototype._handleGet = function (message) {
+  console.log('received get request', message);
   this.db.get(message, this._replyGet.bind(this, message));
 };
 
