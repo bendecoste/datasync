@@ -18,7 +18,7 @@
           <div id="header">
               <h1>DataSync Chat Demo</h1>
           </div>
-          <div id="chatview">
+          <div style="overflow: scroll" id="chatview">
           </div>
           <div id="chatbox">
               <form>
@@ -36,6 +36,10 @@
         chatBubble.className = "chatBubble";
 
         document.getElementById('chatview').appendChild(chatBubble);
+
+        // scroll div to the bottom
+        var objDiv = document.getElementById('chatview');
+        objDiv.scrollTop = objDiv.scrollHeight;
       }
 
       window.onload = function () {
