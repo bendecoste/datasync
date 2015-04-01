@@ -55,7 +55,7 @@
             // get the last 100 messages
             room.get(100, function(data) {
               console.log('got all data', data);
-                for (var i =0; i<data.size(); i++) {
+                for (var i =0; i<data.length; i++) {
                   addChatbox(data[i]);
                 }
             });
