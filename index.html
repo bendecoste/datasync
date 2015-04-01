@@ -19,7 +19,6 @@
               <h1>DataSync Chat Demo</h1>
           </div>
           <div id="chatview">
-              <p id="messageBox" class="chatBubble">Last sent message: </p>
           </div>
           <div id="chatbox">
               <form>
@@ -31,6 +30,14 @@
 
 
     <script>
+      function addChatbox (name) {
+        var chatBubble = document.createElement("p");
+        chatBubble.textContent = data[i];
+        chatBubble.className = "chatBubble";
+
+        document.getElementById('chatbox').appendChild(chatBubble);
+      }
+
       window.onload = function () {
         // connect to datasync
         new DataSync().connect(function (ds) {
@@ -49,8 +56,7 @@
             room.get(100, function(data) {
               console.log('got all data', data);
                 for (var i =0; i<data.size(); i++) {
-                    var chatBubble = document.createElement("p");
-                    chatBubble.textContent = data[i];
+                  addChatbox(data[i]);
                 }
             });
 
@@ -61,9 +67,7 @@
             };
 
             // whenever another user adds a message, add it to the messagebox
-            room.onadd(function(value) {
-              document.getElementById('messageBox').textContent = 'Message: ' + value;
-            });
+            room.onadd(addChatbox.bind(null));
           });
         });
       };
